@@ -83,7 +83,10 @@ button_map = []
 #Set variable for the joystick
 fn = '/dev/input/js0'
 print('Opening %s...' % fn)
-jsdev = open(fn, 'rb')
+try:
+    jsdev = open(fn, 'rb')
+except:
+    exit
 # Get the device name.
 #buf = bytearray(63)
 buf = array.array('B', [0] * 64)

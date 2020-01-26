@@ -18,8 +18,6 @@ GPIO.setup(GPIO_PWMA, GPIO.OUT)
 pwm = GPIO.PWM(GPIO_PWMA,200)
 
 
-print("MOLdul zainportowany")
-
 class Engine(object):
     """docstring for Engine."""
     def __init__(self):
@@ -35,7 +33,9 @@ class Engine(object):
     def engineGo(self, axis, btn):
     # """This function will calculate direction and speed of engine concidering usage of both pad trriggers.
     # The range will be from -1(full back) to 1(full forvard)"""
-
+    #check if engine is ready to go
+        if (GPIO.output(GPIO_STBY,False)):
+            self.engineOn
         print(axis, last_axis_used)
         direction = self.engineDirection(axis, btn)
         print(direction)

@@ -82,9 +82,9 @@ def parkingSensor():
 
 
 if __name__ == "__main__":
-    t1 = threading.Thread(target=parkingSensor)
-    t1.daemon = True
-    t1.start()
+#    t1 = threading.Thread(target=parkingSensor)
+#    t1.daemon = True
+#    t1.start()
     try:
         while True:
             type, button, state = xbox.readJoystick()

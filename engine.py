@@ -1,7 +1,6 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-
 last_axis_used = ""
 
 GPIO_AIN1 = 4
@@ -16,7 +15,6 @@ GPIO.setup(GPIO_AIN2, GPIO.OUT)
 GPIO.setup(GPIO_STBY, GPIO.OUT)
 GPIO.setup(GPIO_PWMA, GPIO.OUT)
 pwm = GPIO.PWM(GPIO_PWMA,200)
-print("Engine module impoirted")
 
 class Engine(object):
     """docstring for Engine."""
@@ -27,18 +25,20 @@ class Engine(object):
         GPIO.output(GPIO_STBY,GPIO.HIGH)
         pwm.start(0)
         print("Engine: ON")
+
     def engineOff(self):
         GPIO.output(GPIO_STBY,GPIO.LOW)
         print("Engine: OFF")
+
     def engineGo(self, axis, btn):
-    # """This function will calculate direction and speed of engine concidering usage of both pad trriggers.
-    # The range will be from -1(full back) to 1(full forvard)"""
-    #check if engine is ready to go
-        print(axis, last_axis_used)
+    # Calculates direction and speed of engine considering usage of both pad triggers.
+    # The range will be from -1(full back) to 1(full forvard)
+    # check if engine is ready to go
+        # print(axis, last_axis_used)
         direction = self.engineDirection(axis, btn)
-        print(direction)
+        # print(direction)
         speed = self.engineSpeed(btn)
-        print ("Motor cycle is: ", speed)
+        # print ("Motor cycle is: ", speed)
         pwm.ChangeDutyCycle(speed)
 
     def engineDirection(self, axis, btn):

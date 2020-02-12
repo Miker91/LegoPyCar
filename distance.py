@@ -25,7 +25,7 @@ def distance():
     GPIO.output(GPIO_TRIGGER, False)
 
     if GPIO.input(GPIO_ECHO) == 1:
-        print("-Measurement error-")
+        print("---Measurement error---")
         exit 
 
     while GPIO.input(GPIO_ECHO) == 0:

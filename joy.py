@@ -1,6 +1,10 @@
 import os, struct, array
 from fcntl import ioctl
 
+# This module is based on:
+# https://gist.github.com/rdb/8864666
+# I reorganized the code to be a little bit more flexible
+
 # We'll store the states here.
 axis_states = {}
 button_states = {}
@@ -86,6 +90,7 @@ print('Opening %s...' % fn)
 try:
     jsdev = open(fn, 'rb')
 except:
+    print("Controller wasn't found.")
     exit
 # Get the device name.
 #buf = bytearray(63)

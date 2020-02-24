@@ -22,6 +22,7 @@ pwm.start(0)
 pwmParking = GPIO.PWM(GPIO_BUZZER,0.5)
 pwmParking.start(0)
 
+
 # Set xBox controller
 xbox = joy.Joystick()
 # Set engine
@@ -46,18 +47,19 @@ def getCycle(axis, x):
 def parkingSensor():    
     while True:
         cm = distance.distance()
-        if cm < 100 and cm >= 10:
-            # print("PWM", 10/cm*100)
-            pwmParking.ChangeDutyCycle(10/cm*100)
-        elif cm < 10:
+        if cm < 100 and cm >= 20:
+            pwmParking.ChangeFrequency(100/cm)
+            pwmParking.ChangeDutyCycle(50)
+        elif cm < 20:
             pwmParking.ChangeDutyCycle(100)
             # Brake to avoid collision
             motor.engineOff()
             sleep(1)
             motor.engineOn()
+            sleep(1)
         else:
             pwmParking.ChangeDutyCycle(0)
-        sleep(0.05)
+        sleep(0.5)
 
 #main loop
 if __name__ == "__main__":

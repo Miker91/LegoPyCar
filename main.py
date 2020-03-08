@@ -22,13 +22,22 @@ GPIO_PWMA = 21
 GPIO_STBY = 27
 MOTOR_PWM_HZ = 200
 
+#Front Lights - Connected to motor controller
+GPIO_BIN1 = 5
+GPIO_BIN2 = 6
+GPIO_PWMB = 2
+
 #Distance detector GPIOs
 GPIO_TRIGGER = 13
 GPIO_ECHO = 19
 
+
 #set GPIO direction (IN / OUT)
 GPIO.setup(GPIO_SERVO_PIN, GPIO.OUT)
 GPIO.setup(GPIO_LED, GPIO.OUT)
+GPIO.setup(GPIO_BIN1, GPIO.OUT)
+GPIO.setup(GPIO_BIN2, GPIO.OUT)
+GPIO.setup(GPIO_PWMB, GPIO.OUT)
 
 # SET PWM Servo
 pwm = GPIO.PWM(GPIO_SERVO_PIN,50)
@@ -81,6 +90,14 @@ def parkingSensor():
             pwmParking.ChangeDutyCycle(0)
         sleep(0.1)
 
+def lights():
+    if GPIO.input(GPIO_BIN1):
+        GPIO.output(GPIO_BIN1, GPIO.LOW)
+        GPIO.output(GPIO_PWMB, GPIO.LOW)
+    else:
+        GPIO.output(GPIO_BIN1, GPIO.HIGH)
+        GPIO.output(GPIO_PWMB, GPIO.HIGH)
+
 #main loop
 if __name__ == "__main__":
     # Run a loop in a separate thread.
@@ -97,7 +114,8 @@ if __name__ == "__main__":
                 if state:
                     if button == "select":
                         break
-                else:
+                    elif button == "a":
+                        lights()
                     # The place for further buttons assignments
                     pass
             elif type == "axis":

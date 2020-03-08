@@ -9,28 +9,47 @@ from time import sleep
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
+#Servo PWM GPIO
 GPIO_SERVO_PIN  = 18
-GPIO_BUZZER = 12
+
+#LED GPIO for parking detecotor
+GPIO_LED = 12
+
+#Motor GPIOs
+GPIO_AIN1 = 4
+GPIO_AIN2 = 17
+GPIO_PWMA = 21
+GPIO_STBY = 27
+MOTOR_PWM_HZ = 200
+
+#Distance detector GPIOs
+GPIO_TRIGGER = 13
+GPIO_ECHO = 19
+
+#set GPIO direction (IN / OUT)
 GPIO.setup(GPIO_SERVO_PIN, GPIO.OUT)
-GPIO.setup(GPIO_BUZZER, GPIO.OUT)
+GPIO.setup(GPIO_LED, GPIO.OUT)
 
 # SET PWM Servo
 pwm = GPIO.PWM(GPIO_SERVO_PIN,50)
 pwm.start(0)
 
-# SET PWM LED - Parking detector
-pwmParking = GPIO.PWM(GPIO_BUZZER,0.5)
+# SET LED PWM- Parking detector
+pwmParking = GPIO.PWM(GPIO_LED,0.5)
 pwmParking.start(0)
+# ---------GPIO Handling----------
 
-
+# Create objects for parking detector, controller, and motor engine 
+# Set parking (distacne) detector and assign GPIOs
+detector = distance.ParkingDetector(GPIO_TRIGGER,GPIO_ECHO)
 # Set xBox controller
 xbox = joy.Joystick()
-# Set engine
-motor = engine.Engine()
+# Set engine and assign GPIOs and Hz
+motor = engine.Engine(GPIO_AIN1,GPIO_AIN2,GPIO_PWMA,GPIO_STBY,MOTOR_PWM_HZ)
 
 def getCycle(axis, x):
     """Calculate pulse for PWM and move servo.
-    My srvo worked quite different than stated in documentation, so after some testing it came out that:
+    My servo worked quite different than stated in documentation, so after some testing it came out that:
     2% is -90deg
     12% is 90deg
     calculation has been done simply using f(x)=5x+7
@@ -46,8 +65,9 @@ def getCycle(axis, x):
 
 def parkingSensor():    
     while True:
-        cm = distance.distance()
+        cm = detector.distance()
         if cm < 100 and cm >= 20:
+            "Controll LED blinking frequency"
             pwmParking.ChangeFrequency(100/cm)
             pwmParking.ChangeDutyCycle(50)
         elif cm < 20:
@@ -59,7 +79,7 @@ def parkingSensor():
             sleep(1)
         else:
             pwmParking.ChangeDutyCycle(0)
-        sleep(0.5)
+        sleep(0.1)
 
 #main loop
 if __name__ == "__main__":
